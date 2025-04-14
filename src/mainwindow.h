@@ -2,10 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 QT_END_NAMESPACE
 
@@ -18,6 +19,7 @@ public:
     ~MainWindow();
 
 private:
+    QCustomPlot *customPlot;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

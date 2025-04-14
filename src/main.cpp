@@ -8,6 +8,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    // Dark mode interface
+    QApplication::setStyle("Fusion");
+
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {

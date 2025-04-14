@@ -1,22 +1,21 @@
 cmake_minimum_required(VERSION 3.19)
 project(MyTradingView LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets LinguistTools)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets PrintSupport LinguistTools Qt6Network)
 
 qt_standard_project_setup()
 
-include_directories(src)
+include_directories(src external/qcustomplot)
 
-# Inclure le fichier .ui directement dans qt_add_executable
 qt_add_executable(MyTradingView
     WIN32 MACOSX_BUNDLE
     src/main.cpp
     src/mainwindow.cpp
     src/mainwindow.h
-    src/mainwindow.ui   # Le chemin correct pour le fichier .ui
+    src/mainwindow.ui
+    external/qcustomplot/qcustomplot.cpp
+    external/qcustomplot/qcustomplot.h
 )
-
-# Ne pas utiliser qt_wrap_ui ici, cela est pris en charge automatiquement par qt_add_executable
 
 qt_add_translations(
     TARGETS MyTradingView
@@ -27,6 +26,8 @@ target_link_libraries(MyTradingView
     PRIVATE
         Qt::Core
         Qt::Widgets
+        Qt::PrintSupport
+        Qt::Qt6Network
 )
 
 include(GNUInstallDirs)
