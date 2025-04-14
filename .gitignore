@@ -1,0 +1,29 @@
+# Build directories
+/build*/
+/*.user
+*.user.*
+*.pro.user
+
+# Qt Creator files
+*.autosave
+*.creator*
+*.qmlproject.user
+
+# Object and binary files
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# moc/uic/rcc generated files
+moc_*
+ui_*
+qrc_*
+
+# Backup files
+*~
+*.swp
+*.bak
+
