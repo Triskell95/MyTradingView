@@ -5,13 +5,18 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets LinguistTools)
 
 qt_standard_project_setup()
 
+include_directories(src)
+
+# Inclure le fichier .ui directement dans qt_add_executable
 qt_add_executable(MyTradingView
     WIN32 MACOSX_BUNDLE
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
+    src/main.cpp
+    src/mainwindow.cpp
+    src/mainwindow.h
+    src/mainwindow.ui   # Le chemin correct pour le fichier .ui
 )
+
+# Ne pas utiliser qt_wrap_ui ici, cela est pris en charge automatiquement par qt_add_executable
 
 qt_add_translations(
     TARGETS MyTradingView
