@@ -5,10 +5,19 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
     chartManager(new ChartManager(this)),
-    apiClient(new ApiClient(this)) {
+    apiClient(new ApiClient(this)),
+    symbols(new SymbolsLists())
+{
     ui->setupUi(this);
-    ui->verticalLayout->addWidget(chartManager->getPlot());
+
+    ui->horizontalLayout->addWidget(chartManager->getPlot(), 7);
+    ui->horizontalLayout->addWidget(symbols->getTable(), 3);
+    ui->tab_chart->setLayout(ui->horizontalLayout);
+    setCentralWidget(ui->tabWidget);
+
     setSheetStyle();
+
+    showMaximized();
 }
 
 void MainWindow::on_plotButton_clicked() {

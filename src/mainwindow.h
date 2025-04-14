@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include "chart/chartmanager.h"
 #include "api/apiclient.h"
+#include "data/symbolslists.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,9 +20,10 @@ private slots:
     void on_plotButton_clicked();
 
 private:
-    Ui::MainWindow *ui;
-    ChartManager *chartManager;
-    ApiClient *apiClient;
+    Ui::MainWindow* ui;
+    ChartManager* chartManager;
+    ApiClient* apiClient;
+    SymbolsLists* symbols;
 
     void setSheetStyle();
 };

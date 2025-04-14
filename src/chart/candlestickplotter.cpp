@@ -8,7 +8,12 @@ void CandlestickPlotter::plot(const QVector<double>& xData, const QVector<double
                               const QVector<double>& closeData) {
 
     if (xData.isEmpty() || openData.isEmpty() || highData.isEmpty() || lowData.isEmpty() || closeData.isEmpty()) {
-        qDebug() << "Les données sont vides, vérifier les vecteurs passés à plot!";
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Erreur");
+        msgBox.setText("Les données sont vides");
+        msgBox.setIcon(QMessageBox::Critical);  // Définir l'icône comme erreur
+        msgBox.setStandardButtons(QMessageBox::Ok);  // Ajouter un bouton "OK"
+        msgBox.exec();  // Afficher la boîte de message modale
         return;
     }
 

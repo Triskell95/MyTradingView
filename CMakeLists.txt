@@ -19,6 +19,8 @@ qt_add_executable(MyTradingView
     src/chart/candlestickplotter.h src/chart/candlestickplotter.cpp
     src/api/apiclient.h src/api/apiclient.cpp
     src/data/ohlcdata.h src/data/ohlcdata.cpp
+    src/data/SymbolsLists.h src/data/SymbolsLists.cpp
+    src/data/Symbol.h src/data/Symbol.cpp
 )
 
 qt_add_translations(

@@ -24,7 +24,16 @@ ChartManager::ChartManager(QObject *parent) : QObject(parent)
 
     // Création de l'objet QCPFinancial uniquement ici
     candlesticks = new QCPFinancial(customPlot->xAxis, customPlot->yAxis);
-    candlesticks->setWidth(0.6);  // Paramètre pour afficher les bougies
+    candlesticks->setWidth(0.8);  // Paramètre pour afficher les bougies
+
+    // Définir la couleur des bougies haussières et baissières
+    candlesticks->setBrushPositive(QBrush(Qt::green));  // Couleur des bougies haussières (vert)
+    candlesticks->setBrushNegative(QBrush(Qt::red));    // Couleur des bougies baissières (rouge)
+
+    // Définir la couleur des ombres des bougies
+    candlesticks->setPenPositive(QPen(Qt::green));     // Ombre haussière
+    candlesticks->setPenNegative(QPen(Qt::red));       // Ombre baissière
+
 }
 
 QCustomPlot *ChartManager::getPlot()
