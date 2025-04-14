@@ -1,67 +1,62 @@
 #include "chartmanager.h"
-#include <QCustomPlot.h>
-//#include <QCPBars.h>  // Pour dessiner les barres de données
-//#include <QCPGraph.h>  // Pour dessiner un graphique de données linéaires
-#include <QVector>
+#include "qcustomplot.h"
 
-ChartManager::ChartManager(QCustomPlot *customPlotWidget)
-    : customPlot(customPlotWidget)
+ChartManager::ChartManager(QObject *parent) : QObject(parent)
 {
-    // Configuration initiale du graphique
-    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);  // Autoriser le zoom et le déplacement du graphique
+    customPlot = new QCustomPlot();
 
-    // Configure les axes
-    configureXAxis();
-    configureYAxis();
+    // Initialisation du graphique
+    customPlot->addGraph();
+    customPlot->graph(0)->setLineStyle(QCPGraph::lsNone);
+    customPlot->graph(0)->setPen(QPen(Qt::black));
+
+    customPlot->setBackground(QBrush(Qt::transparent));
+    // Rendre les axes également transparents (si nécessaire)
+    customPlot->xAxis->setBasePen(QPen(Qt::white));  // Axe X transparent
+    customPlot->yAxis->setBasePen(QPen(Qt::white));  // Axe Y transparent
+    customPlot->xAxis->setTickPen(QPen(Qt::white));  // Marqueurs d'axe X transparents
+    customPlot->yAxis->setTickPen(QPen(Qt::white));  // Marqueurs d'axe Y transparents
+    customPlot->xAxis->setSubTickPen(QPen(Qt::white));  // Sous-marques X
+    customPlot->yAxis->setSubTickPen(QPen(Qt::white));  // Sous-marques Y
+    customPlot->xAxis->setTickLabelColor(Qt::white);  // Couleur des labels de l'axe X (si vous souhaitez les afficher)
+    customPlot->yAxis->setTickLabelColor(Qt::white);  // Couleur des labels de l'axe Y (si vous souhaitez les afficher)
+
+
+    // Création de l'objet QCPFinancial uniquement ici
+    candlesticks = new QCPFinancial(customPlot->xAxis, customPlot->yAxis);
+    candlesticks->setWidth(0.6);  // Paramètre pour afficher les bougies
 }
 
-void ChartManager::configureXAxis()
+QCustomPlot *ChartManager::getPlot()
 {
-
-    QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
-    dateTicker->setDateTimeFormat("dd/MM/yy");
-
-    customPlot->xAxis->setTicker(dateTicker);
-    customPlot->xAxis->setLabel("Time");
-    customPlot->yAxis->setLabel("Price (USD)");
-    customPlot->xAxis->setRange(0, 10);  // Définir une plage d'exemple
+    return customPlot;
 }
 
-void ChartManager::configureYAxis()
+void ChartManager::plotCandlesticks(const QList<OHLCData> &data)
 {
-    customPlot->yAxis->setLabel("Price");
-    customPlot->yAxis->setRange(0, 100);  // Plage d'exemple pour les prix
-}
+    QVector<double> timeStamps;
+    QVector<double> opens;
+    QVector<double> highs;
+    QVector<double> lows;
+    QVector<double> closes;
 
-void ChartManager::plotData(const QVector<OHLCData> &ohlcData)
-{
-    // Vider les anciens vecteurs
-    xData.clear();
-    openData.clear();
-    highData.clear();
-    lowData.clear();
-    closeData.clear();
-
-    // Remplir les vecteurs avec les nouvelles données OHLC
-    for (const OHLCData &ohlc : ohlcData) {
-        xData.append(ohlc.xData);  // L'axe X représente le temps
-        openData.append(ohlc.openData);
-        highData.append(ohlc.highData);
-        lowData.append(ohlc.lowData);
-        closeData.append(ohlc.closeData);
+    for (const OHLCData &ohlc : data)
+    {
+        // Remplir les vecteurs avec les valeurs OHLC
+        timeStamps.append(ohlc.timestamp);
+        opens.append(ohlc.open);
+        highs.append(ohlc.high);
+        lows.append(ohlc.low);
+        closes.append(ohlc.close);
     }
 
-    // Ajouter un graphique pour les barres OHLC
-    customPlot->clearGraphs();  // Effacer les anciens graphiques
-    customPlot->addGraph();  // Ajouter un nouveau graphique
+    // Passer les données sous forme de vecteurs séparés à setData
+    candlesticks->setData(timeStamps, opens, highs, lows, closes);
 
-    // Tracer les données OHLC sur le graphique
-    QCPGraph *ohlcGraph = new QCPGraph(customPlot->xAxis, customPlot->yAxis);
-    ohlcGraph->setData(xData, closeData);  // Afficher les prix de clôture sur l'axe Y
-
-    // Tracer d'autres séries si nécessaire (par exemple, les prix d'ouverture, de haut et de bas)
-    QCPBars *bars = new QCPBars(customPlot->xAxis, customPlot->yAxis);
-    bars->setData(xData, openData);  // Afficher les prix d'ouverture sous forme de barres
-
-    customPlot->replot();  // Redessiner le graphique
+    QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
+    dateTicker->setDateTimeFormat("dd/MM/yyyy");
+    customPlot->xAxis->setTicker(dateTicker);
+    customPlot->xAxis->setRange(timeStamps.first(), timeStamps.last());  // Plage d'axe X entre le premier et le dernier timestamp
+    customPlot->yAxis->rescale();  // Redimensionner l'axe Y pour s'adapter aux données
+    customPlot->replot();
 }

@@ -1,33 +1,18 @@
-#ifndef CHARTMANAGER_H
-#define CHARTMANAGER_H
+#pragma once
 
-#include <QCustomPlot.h>  // Bibliothèque pour gérer les graphiques
-#include <QVector>
-#include "data/ohlcdata.h"  // Inclure les données OHLC
+#include <QObject>
+#include "qcustomplot.h"
+#include "data/ohlcdata.h"
 
-class ChartManager
-{
+class ChartManager : public QObject {
+    Q_OBJECT
+
 public:
-    // Constructeur
-    ChartManager(QCustomPlot *customPlotWidget);
-
-    // Méthode pour afficher les données OHLC sur le graphique
-    void plotData(const QVector<OHLCData> &ohlcData);
-
-    // Méthode pour configurer l'axe Y
-    void configureYAxis();
-
-    // Méthode pour configurer l'axe X
-    void configureXAxis();
+    explicit ChartManager(QObject *parent = nullptr);
+    QCustomPlot* getPlot();
+    void plotCandlesticks(const QList<OHLCData> &data);
 
 private:
-    QCustomPlot *customPlot;  // Pointeur vers l'objet QCustomPlot
-    QCPGraph *ohlcGraph;     // Graphique pour afficher les données OHLC
-    QVector<double> xData;   // Vecteur des données pour l'axe X
-    QVector<double> openData;    // Vecteur des valeurs d'ouverture des données OHLC
-    QVector<double> highData;    // Vecteur des valeurs maximales des données OHLC
-    QVector<double> lowData;     // Vecteur des valeurs minimales des données OHLC
-    QVector<double> closeData;   // Vecteur des valeurs de clôture des données OHLC
+    QCustomPlot *customPlot;
+    QCPFinancial *candlesticks;
 };
-
-#endif // CHARTMANAGER_H

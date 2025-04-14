@@ -1,23 +1,9 @@
-// data/OHLCData.h
-#ifndef OHLC_DATA_H
-#define OHLC_DATA_H
+#pragma once
 
-#include <QVector>
-#include <QJsonArray>
-
-class OHLCData {
-public:
-    QVector<double> xData;
-    QVector<double> openData;
-    QVector<double> highData;
-    QVector<double> lowData;
-    QVector<double> closeData;
-
-    void fromJsonArray(const QJsonArray &data);
-    void processData(QVector<OHLCData>& ohlcData);
-
-private:
-
+struct OHLCData {
+    long long int timestamp;
+    double open;
+    double high;
+    double low;
+    double close;
 };
-
-#endif // OHLC_DATA_H

@@ -1,26 +1,16 @@
-// api/ApiClient.h
-#ifndef APICLIENT_H
-#define APICLIENT_H
+#pragma once
 
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <QObject>
-#include <QUrl>
+#include <QNetworkAccessManager>
+#include "data/ohlcdata.h"
 
 class ApiClient : public QObject {
     Q_OBJECT
+
 public:
-    ApiClient(QObject *parent = nullptr);
-    void fetchOHLCData(const QUrl &url);
-
-signals:
-    void dataFetched(const QByteArray &data);
-
-private slots:
-    void onReplyFinished(QNetworkReply *reply);
+    explicit ApiClient(QObject *parent = nullptr);
+    void fetchOHLC(const QString &coinId, std::function<void(QList<OHLCData>)> callback);
 
 private:
     QNetworkAccessManager *manager;
 };
-
-#endif // APICLIENT_H
