@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(MyTradingView LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets PrintSupport LinguistTools Qt6Network)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets PrintSupport LinguistTools Network)
 
 qt_standard_project_setup()
 
@@ -15,6 +15,10 @@ qt_add_executable(MyTradingView
     src/mainwindow.ui
     external/qcustomplot/qcustomplot.cpp
     external/qcustomplot/qcustomplot.h
+    src/chart/chartmanager.h src/chart/chartmanager.cpp
+    src/chart/candlestickplotter.h src/chart/candlestickplotter.cpp
+    src/api/apiclient.h src/api/apiclient.cpp
+    src/data/ohlcdata.h src/data/ohlcdata.cpp
 )
 
 qt_add_translations(
@@ -27,7 +31,7 @@ target_link_libraries(MyTradingView
         Qt::Core
         Qt::Widgets
         Qt::PrintSupport
-        Qt::Qt6Network
+        Qt::Network
 )
 
 include(GNUInstallDirs)

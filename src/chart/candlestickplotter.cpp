@@ -1,0 +1,19 @@
+// chart/CandlestickPlotter.cpp
+#include "CandlestickPlotter.h"
+
+CandlestickPlotter::CandlestickPlotter(QCustomPlot* plotWidget) : plotWidget(plotWidget) {}
+
+void CandlestickPlotter::plot(const QVector<double>& xData, const QVector<double>& openData,
+                              const QVector<double>& highData, const QVector<double>& lowData,
+                              const QVector<double>& closeData) {
+
+    if (xData.isEmpty() || openData.isEmpty() || highData.isEmpty() || lowData.isEmpty() || closeData.isEmpty()) {
+        qDebug() << "Les données sont vides, vérifier les vecteurs passés à plot!";
+        return;
+    }
+
+    QCPBars *candlestickBars = new QCPBars(plotWidget->xAxis, plotWidget->yAxis);
+    candlestickBars->setWidth(0.8);
+    candlestickBars->setData(xData, closeData);
+    candlestickBars->setPen(Qt::NoPen);
+}

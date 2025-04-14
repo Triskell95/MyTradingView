@@ -2,24 +2,37 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "qcustomplot.h"
+#include <QCustomPlot.h>
+#include "chart/chartmanager.h"
+#include "data/ohlcdata.h"
+#include "api/apiclient.h"
+#include <QVector>
 
-QT_BEGIN_NAMESPACE
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
-QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+
 private:
-    QCustomPlot *customPlot;
+    QCustomPlot* customPlot;
     Ui::MainWindow *ui;
+    ChartManager *chartManager;  // Instance de ChartManager pour gérer l'affichage des graphiques
+    OHLCData* dataHandler;
+    QVector<OHLCData> ohlcData;  // Conteneur pour stocker les données OHLC
+    ApiClient* apiClient;
+
+    // Méthode pour initialiser les données de test (OHLC)
+    void initializeTestData();
+    void setSheetStyle();
 };
+
 #endif // MAINWINDOW_H
