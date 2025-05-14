@@ -17,7 +17,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_plotButton_clicked();
 
 private:
     Ui::MainWindow* ui;

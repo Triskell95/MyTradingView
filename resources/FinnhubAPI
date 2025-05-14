@@ -1,0 +1,71 @@
+🔹 1. Quote API — /quote
+URL :
+https://finnhub.io/api/v1/quote?symbol=AAPL&token=YOUR_API_KEY
+
+Champs retournés :
+
+Champ	Description
+c	Current price (prix actuel)
+h	High price of the day (plus haut)
+l	Low price of the day (plus bas)
+o	Open price of the day (prix d’ouverture)
+pc	Previous close price (clôture précédente)
+t	Timestamp (en secondes, UNIX)
+
+🔹 2. Company Profile — /stock/profile2
+URL :
+https://finnhub.io/api/v1/stock/profile2?symbol=AAPL&token=YOUR_API_KEY
+
+Champs disponibles :
+
+Champ	Description
+name	Nom complet de la société
+ticker	Symbole
+exchange	Bourse
+ipo	Date d'introduction en bourse
+market  Capitalization	Capitalisation boursière
+weburl	Site officiel
+logo	URL du logo
+finnhubIndustry	Secteur d’activité
+
+🔹 3. Search — /search
+Pour retrouver un symbole à partir d’un nom partiel (utile pour interface utilisateur).
+
+URL :
+https://finnhub.io/api/v1/search?q=total&token=YOUR_API_KEY
+
+Champs dans chaque résultat :
+
+Champ	Description
+symbol	Ticker (ex: TOTF.PA)
+description	Nom complet
+type	Type d'actif
+mic	Code de la bourse
+displaySymbol	Symbole affiché
+
+✅ Types d’actifs accessibles via Finnhub :
+Type d'actif	Détails	Exemple de symboles
+Actions (stocks)	Données en temps réel, historiques, fundamentals, actualités, etc.	AAPL, MSFT, AIR.PA
+Cryptomonnaies	Cours en temps réel, OHLC, carnets d’ordres (order book), actualités	BINANCE:BTCUSDT, COINBASE:ETHUSD
+Devises (Forex)	Cours en temps réel, taux de change	EUR/USD, USD/JPY
+Indices	Valeurs d’indices boursiers	^GSPC (S&P 500), ^FTSE
+ETF	Similaire aux actions (certains ont leur propre catégorie dans les endpoints)	SPY, QQQ
+Obligations	Données fondamentales et taux	Pas toujours directement accessibles
+Futures	Données via symboles spécifiques, parfois disponibles via /stock/candle ou /quote	CME:CL1 (pétrole brut)
+Matières premières (commodities)	Indirectement via indices ou futures (pas en tant que catégorie dédiée)	GC=F (or), CL=F (pétrole)
+
+🔍 Exemple d’identifiants (symboles) :
+Pour les cryptos : BINANCE:BTCUSDT, COINBASE:BTCUSD
+
+Pour les devises : OANDA:EUR_USD
+
+Pour les actions FR : AIR.PA, BNP.PA, SAN.PA
+
+Pour les indices : ^GSPC (S&P 500), ^DJI, ^N100
+
+🧠 À savoir :
+Le type d’actif n’est pas toujours explicite dans l’API.
+
+Tu peux utiliser /stock/symbol?exchange=... pour récupérer tous les symboles d’une bourse donnée (comme US, PA, FOREX, BINANCE, etc.).
+
+Le champ "type" retourné dans certaines réponses peut indiquer "Common Stock", "Crypto", etc.

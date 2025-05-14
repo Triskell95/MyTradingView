@@ -16,8 +16,11 @@ public:
     SymbolsLists();
     void addSymbol(Symbol* s);
     void sortList();
+    void loadSymbols();
+    void loadFromJsonFile();
 
     inline QTableWidget* getTable() { return tableWidget; };
+    inline QList<Symbol*> getData() { return _list; };
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -28,6 +31,7 @@ private slots:
 private:
     QTableWidget *tableWidget;
     QList<Symbol*> _list;
+    QString _request;
 };
 
 #endif // SYMBOLSLISTS_H

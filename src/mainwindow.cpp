@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "data/ohlcdata.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
@@ -9,8 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
     symbols(new SymbolsLists())
 {
     ui->setupUi(this);
-
-    ui->horizontalLayout->addWidget(chartManager->getPlot(), 7);
+    //ui->horizontalLayout->setContentsMargins(20, 20, 20 ,20);
+    ui->horizontalLayout->addWidget(chartManager->getChartView(), 7);
+    ui->horizontalLayout->addSpacing(20);
     ui->horizontalLayout->addWidget(symbols->getTable(), 3);
     ui->tab_chart->setLayout(ui->horizontalLayout);
     setCentralWidget(ui->tabWidget);
@@ -18,14 +20,14 @@ MainWindow::MainWindow(QWidget *parent)
     setSheetStyle();
 
     showMaximized();
-}
+    symbols->loadFromJsonFile();
 
-void MainWindow::on_plotButton_clicked() {
     apiClient->fetchOHLC("bitcoin", [=](const QList<OHLCData> &ohlcList) {
 
         if(!ohlcList.empty())
         {
-            chartManager->plotCandlesticks(ohlcList);
+            chartManager->setChartData(ohlcList);
+            chartManager->setChartView();
         } else {
             QMessageBox msgBox;
             msgBox.setWindowTitle("Erreur");

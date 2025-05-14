@@ -27,3 +27,7 @@ qrc_*
 *.swp
 *.bak
 
+#local config files
+*.json
+config.ini
+
