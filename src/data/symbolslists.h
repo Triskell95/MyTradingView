@@ -13,11 +13,10 @@ class SymbolsLists : public QObject
 {
     Q_OBJECT
 public:
-    SymbolsLists();
+    SymbolsLists(QString filename = "");
     void addSymbol(Symbol* s);
     void sortList();
     void loadSymbols();
-    void loadFromJsonFile();
 
     inline QTableWidget* getTable() { return tableWidget; };
     inline QList<Symbol*> getData() { return _list; };

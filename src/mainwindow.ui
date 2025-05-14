@@ -15,11 +15,11 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_chart">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>Charts</string>
        </attribute>
        <widget class="QWidget" name="horizontalLayoutWidget">
         <property name="geometry">
@@ -39,8 +39,33 @@
       </widget>
       <widget class="QWidget" name="tab_positions">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>Positions</string>
        </attribute>
+       <widget class="QWidget" name="horizontalLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>19</y>
+          <width>761</width>
+          <height>481</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="hLPositions">
+         <property name="sizeConstraint">
+          <enum>QLayout::SizeConstraint::SetMaximumSize</enum>
+         </property>
+         <item>
+          <layout class="QVBoxLayout" name="vLPositions">
+           <item>
+            <widget class="QTableView" name="tablePos"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="vLCharts"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>

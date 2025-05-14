@@ -23,6 +23,7 @@ private:
     ChartManager* chartManager;
     ApiClient* apiClient;
     SymbolsLists* symbols;
+    SymbolsLists* positions;
 
     void setSheetStyle();
 };

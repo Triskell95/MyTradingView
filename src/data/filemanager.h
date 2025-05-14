@@ -16,8 +16,10 @@ public:
     QString getDataPath() const;
     void setDataPath(const QString& path);
 
-    bool saveSymbols(const QList<Symbol*>& symbols);
-    QList<Symbol*> loadSymbols();
+    QString loadFinnhubKey();
+
+    bool saveSymbols(const QList<Symbol*>& symbols, QString filename);
+    QList<Symbol*> loadSymbols(QString filename);
 
 private:
     QString configPath;

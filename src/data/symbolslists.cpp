@@ -5,12 +5,14 @@
 #include "api/apiclient.h"
 #include <QStandardPaths>
 #include <QFile>
+#include <QMessageBox>
+#include <QInputDialog>
 
-SymbolsLists::SymbolsLists()
+SymbolsLists::SymbolsLists(QString filename)
 {
     // Load symbols list
     FileManager fm = FileManager();
-    _list = fm.loadSymbols();
+    _list = fm.loadSymbols(filename);
     sortList();
 
     tableWidget = new QTableWidget();
@@ -46,7 +48,19 @@ SymbolsLists::SymbolsLists()
 
     ApiClient* api = new ApiClient();
 
-    QString apiKey = "d0cc5fhr01ql2j3c6rp0d0cc5fhr01ql2j3c6rpg";
+    QString apiKey = fm.loadFinnhubKey();
+
+    if(apiKey == "")
+    {
+        bool ok = false;
+        apiKey = QInputDialog::getText(nullptr,
+                                             "Clé Finnhub manquante",
+                                             "Entrez votre clé Finnhub:",
+                                             QLineEdit::Normal,
+                                             "",  // valeur par défaut
+                                             &ok);
+    }
+
     api->fetchFinnhubQuote("AAPL", apiKey, [](QJsonObject quote) {
         qDebug() << "Prix actuel:" << quote["c"].toDouble();  // "c" = current price
         qDebug() << "Ouverture:" << quote["o"].toDouble();   // "o" = open
@@ -62,27 +76,6 @@ SymbolsLists::SymbolsLists()
             qDebug() << "Symbol: " << symbol->getSymbol() << ", Price: " << symbol->getPrice();
         }
     });
-}
-
-void SymbolsLists::loadFromJsonFile()
-{
-    QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QFile file(appDataPath + "/data.json");
-
-    if (!file.open(QIODevice::ReadOnly))
-        return;
-
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-    QJsonArray array = doc.array();
-
-    tableWidget->setRowCount(array.size());
-
-    for (int i = 0; i < array.size(); ++i) {
-        QJsonObject obj = array[i].toObject();
-        tableWidget->setItem(i, 0, new QTableWidgetItem(obj["symbol"].toString()));
-        tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(obj["price"].toDouble(), 'f', 2)));
-        tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(obj["changePercent"].toDouble(), 'f', 2) + " %"));
-    }
 }
 
 void SymbolsLists::loadSymbols()

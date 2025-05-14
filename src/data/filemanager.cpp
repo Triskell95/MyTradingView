@@ -19,6 +19,24 @@ void FileManager::loadConfig()
     QDir().mkpath(listSymbolsPath);
 }
 
+QString FileManager::loadFinnhubKey()
+{
+    QSettings settings(configPath + "/config.ini", QSettings::IniFormat);
+    QString path = settings.value("Files/dataPath", configPath + "/data").toString();
+
+    QFile file(path + "/finnhub.txt");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Impossible d'ouvrir le fichier:" << path;
+        return QString();
+    }
+
+    QTextStream in(&file);
+    QString firstLine = in.readLine(); // Lit la première ligne
+    file.close();
+
+    return firstLine;
+}
+
 void FileManager::saveConfig()
 {
     QSettings settings(configPath + "/config.ini", QSettings::IniFormat);
@@ -36,7 +54,7 @@ void FileManager::setDataPath(const QString& path)
     saveConfig();
 }
 
-bool FileManager::saveSymbols(const QList<Symbol*>& symbols)
+bool FileManager::saveSymbols(const QList<Symbol*>& symbols, QString filename)
 {
     QJsonArray array;
     for (const auto& sym : symbols)
@@ -49,10 +67,12 @@ bool FileManager::saveSymbols(const QList<Symbol*>& symbols)
         obj["var"]      = (QString("%1").arg(sym->getDailyVar(), 0, 'f', 4));
         obj["currency"] = sym->getCurrency();
         obj["url"]      = sym->getURL();
+        obj["nb"]       = (QString("%1").arg(sym->getNb()));
+        obj["buy"]      = (QString("%1").arg(sym->getBuyPrice(), 0, 'f', 4));
         array.append(obj);
     }
 
-    QFile file(listSymbolsPath + "/symbols.json");
+    QFile file(listSymbolsPath + "/" + filename + ".json");
     if (file.open(QIODevice::WriteOnly)) {
         file.write(QJsonDocument(array).toJson());
         file.close();
@@ -61,11 +81,11 @@ bool FileManager::saveSymbols(const QList<Symbol*>& symbols)
     return false;
 }
 
-QList<Symbol*> FileManager::loadSymbols()
+QList<Symbol*> FileManager::loadSymbols(QString filename)
 {
     QList<Symbol*> symbols;
 
-    QFile file(listSymbolsPath + "/symbols.json");
+    QFile file(listSymbolsPath + "/" + filename + ".json");
     if (file.open(QIODevice::ReadOnly)) {
         QJsonArray array = QJsonDocument::fromJson(file.readAll()).array();
         for (const QJsonValue& val : array) {
@@ -77,7 +97,9 @@ QList<Symbol*> FileManager::loadSymbols()
                 QString(obj["price"].toString()).toFloat(),
                 QString(obj["var"].toString()).toFloat(),
                 QString(obj["currency"].toString()),
-                QString(obj["url"].toString())
+                QString(obj["url"].toString()),
+                QString(obj["nb"].toString()).toInt(),
+                QString(obj["buy"].toString()).toFloat()
                 );
             symbols.append(sym);
         }

@@ -7,21 +7,26 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
     chartManager(new ChartManager(this)),
     apiClient(new ApiClient(this)),
-    symbols(new SymbolsLists())
+    symbols(new SymbolsLists("symbols")),
+    positions(new SymbolsLists("positions"))
 {
     ui->setupUi(this);
-    //ui->horizontalLayout->setContentsMargins(20, 20, 20 ,20);
+
+    // Tab "chart"
     ui->horizontalLayout->addWidget(chartManager->getChartView(), 7);
     ui->horizontalLayout->addSpacing(20);
     ui->horizontalLayout->addWidget(symbols->getTable(), 3);
     ui->tab_chart->setLayout(ui->horizontalLayout);
     setCentralWidget(ui->tabWidget);
 
+    // Tab "Positions"
+
+
+
     setSheetStyle();
-
     showMaximized();
-    symbols->loadFromJsonFile();
 
+    // Load by default BTCUSD chart
     apiClient->fetchOHLC("bitcoin", [=](const QList<OHLCData> &ohlcList) {
 
         if(!ohlcList.empty())
@@ -37,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
             msgBox.exec();  // Afficher la boîte de message modale
         }
     });
+
+    ui->tabWidget->setCurrentIndex(0);
 }
 
 void MainWindow::setSheetStyle()

@@ -6,7 +6,10 @@ Symbol::Symbol():
     _type(typeSymbol::other),
     _price(0.0),
     _dailyVar(0.0),
-    _url(QString(""))
+    _currency("USD"),
+    _url(QString("")),
+    _nb(0),
+    _buyPrice(0.0)
 {
 
 }
@@ -18,19 +21,23 @@ Symbol::Symbol(const Symbol &other):
     _price(other._price),
     _dailyVar(other._dailyVar),
     _currency(other._currency),
-    _url(other._url)
+    _url(other._url),
+    _nb(other._nb),
+    _buyPrice(other._buyPrice)
 {
 
 }
 
-Symbol::Symbol(QString label, QString symbol, typeSymbol type, float price, float dailyVar, QString currency, QString url):
+Symbol::Symbol(QString label, QString symbol, typeSymbol type, float price, float dailyVar, QString currency, QString url, int nb, float buy):
     _label(label),
     _symbol(symbol),
     _type(type),
     _price(price),
     _dailyVar(dailyVar),
     _currency(currency),
-    _url(url)
+    _url(url),
+    _nb(nb),
+    _buyPrice(buy)
 {
 
 }
@@ -45,6 +52,8 @@ QJsonObject Symbol::toJson() const
     obj["dailyVar"] = _dailyVar;
     obj["currency"] = _currency;
     obj["url"] = _url;
+    obj["nb"] = _nb;
+    obj["buy"] = _buyPrice;
     return obj;
 }
 
@@ -57,8 +66,10 @@ Symbol* Symbol::fromJson(const QJsonObject &obj)
     float dailyVar = obj["dailyVar"].toDouble();
     QString currency = obj["currency"].toString();
     QString url = obj["url"].toString();
+    int nb = obj["nb"].toInt();
+    float buy = obj["buy"].toDouble();
 
-    return new Symbol(label, symbol, type, price, dailyVar, currency, url);
+    return new Symbol(label, symbol, type, price, dailyVar, currency, url, nb, buy);
 }
 
 

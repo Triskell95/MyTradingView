@@ -112,7 +112,7 @@ Symbol* ApiClient::parseSymbol(const QJsonObject &symbolObject)
     QString url = symbolObject["url"].toString(); // Si le champ URL existe dans les données JSON
 
     // On suppose ici que le type du symbole est `stockUS` par défaut, mais cela peut être ajusté
-    return new Symbol(label, symbol, typeSymbol::stockUS, price, dailyVariation, currency, url);
+    return new Symbol(label, symbol, typeSymbol::stockUS, price, dailyVariation, currency, url, 0, 0.0);
 }
 
 void ApiClient::saveToJsonFile(QList<Symbol*> symbols, const QString &filename)
