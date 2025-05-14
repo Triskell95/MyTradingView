@@ -19,6 +19,24 @@ void FileManager::loadConfig()
     QDir().mkpath(listSymbolsPath);
 }
 
+void FileManager::saveFinnhubKey(QString key)
+{
+    QSettings settings(configPath + "/config.ini", QSettings::IniFormat);
+    QString path = settings.value("Files/dataPath", configPath + "/data").toString();
+    QFile file(path + "/finnhub.txt");
+
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QString oldContent = file.readAll();
+        file.close();
+
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+            QTextStream out(&file);
+            out << key << "\n" << oldContent;
+            file.close();
+        }
+    }
+}
+
 QString FileManager::loadFinnhubKey()
 {
     QSettings settings(configPath + "/config.ini", QSettings::IniFormat);
@@ -98,7 +116,7 @@ QList<Symbol*> FileManager::loadSymbols(QString filename)
                 QString(obj["var"].toString()).toFloat(),
                 QString(obj["currency"].toString()),
                 QString(obj["url"].toString()),
-                QString(obj["nb"].toString()).toInt(),
+                QString(obj["nb"].toString()).toFloat(),
                 QString(obj["buy"].toString()).toFloat()
                 );
             symbols.append(sym);

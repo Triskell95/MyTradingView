@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "data/ohlcdata.h"
 #include <QMessageBox>
+#include <QStandardItemModel>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
@@ -20,8 +21,16 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(ui->tabWidget);
 
     // Tab "Positions"
+    QPalette palette = ui->tablePos->palette();
+    palette.setColor(QPalette::Base, Qt::transparent); // Fond transparent
+    palette.setColor(QPalette::Text, Qt::white);       // Texte
+    ui->tablePos->setPalette(palette);
 
-
+    QStandardItemModel* model = new QStandardItemModel(0, 0, this); // 0 lignes, 0 colonnes
+    ui->tablePos->setModel(model);
+    ui->tablePos->setBackgroundRole(QPalette::NoRole);
+    model->setColumnCount(colPosition::MAX);
+    positions->fillQTableView(ui->tablePos, model);
 
     setSheetStyle();
     showMaximized();

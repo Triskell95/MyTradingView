@@ -3,6 +3,12 @@
 
 #include <QTableWidget>
 #include "Symbol.h"
+#include <QStandardItemModel>
+
+enum colPosition
+{
+    LABEL = 0, NB, BUY, TOTAL_INVEST, PRICE, TOTAL_VAL, VAR, REPART, TYPE, MAX
+};
 
 enum colIndex
 {
@@ -21,6 +27,8 @@ public:
     inline QTableWidget* getTable() { return tableWidget; };
     inline QList<Symbol*> getData() { return _list; };
 
+    void fillQTableView(QTableView* table, QStandardItemModel* model);
+
 protected:
     void resizeEvent(QResizeEvent *event);
 
@@ -31,6 +39,8 @@ private:
     QTableWidget *tableWidget;
     QList<Symbol*> _list;
     QString _request;
+    float totalBuy;
+    float totalPrice;
 };
 
 #endif // SYMBOLSLISTS_H

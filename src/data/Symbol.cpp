@@ -28,7 +28,7 @@ Symbol::Symbol(const Symbol &other):
 
 }
 
-Symbol::Symbol(QString label, QString symbol, typeSymbol type, float price, float dailyVar, QString currency, QString url, int nb, float buy):
+Symbol::Symbol(QString label, QString symbol, typeSymbol type, float price, float dailyVar, QString currency, QString url, float nb, float buy):
     _label(label),
     _symbol(symbol),
     _type(type),
@@ -66,12 +66,38 @@ Symbol* Symbol::fromJson(const QJsonObject &obj)
     float dailyVar = obj["dailyVar"].toDouble();
     QString currency = obj["currency"].toString();
     QString url = obj["url"].toString();
-    int nb = obj["nb"].toInt();
+    float nb = obj["nb"].toDouble();
     float buy = obj["buy"].toDouble();
 
     return new Symbol(label, symbol, type, price, dailyVar, currency, url, nb, buy);
 }
 
+QString Symbol::getStrType()
+{
+    QString type = "";
+    switch(_type)
+    {
+        case stockFR:
+            type = "Actions FR";
+            break;
+        case stockUS:
+            type = "Actions US";
+            break;
+        case currency:
+            type = "Devises";
+            break;
+        case metal:
+            type = "Métal";
+            break;
+        case crypto:
+            type = "Crypto";
+            break;
+        case other:
+            type = "Autre";
+            break;
+    }
+    return type;
+}
 
 void Symbol::setURL()
 {

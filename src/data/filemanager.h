@@ -17,6 +17,7 @@ public:
     void setDataPath(const QString& path);
 
     QString loadFinnhubKey();
+    void saveFinnhubKey(QString key);
 
     bool saveSymbols(const QList<Symbol*>& symbols, QString filename);
     QList<Symbol*> loadSymbols(QString filename);

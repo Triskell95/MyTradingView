@@ -8,7 +8,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 
-SymbolsLists::SymbolsLists(QString filename)
+SymbolsLists::SymbolsLists(QString filename): totalBuy(0.0), totalPrice(0.0)
 {
     // Load symbols list
     FileManager fm = FileManager();
@@ -50,7 +50,7 @@ SymbolsLists::SymbolsLists(QString filename)
 
     QString apiKey = fm.loadFinnhubKey();
 
-    if(apiKey == "")
+    while(apiKey == "")
     {
         bool ok = false;
         apiKey = QInputDialog::getText(nullptr,
@@ -59,6 +59,7 @@ SymbolsLists::SymbolsLists(QString filename)
                                              QLineEdit::Normal,
                                              "",  // valeur par défaut
                                              &ok);
+        fm.saveFinnhubKey(apiKey);
     }
 
     api->fetchFinnhubQuote("AAPL", apiKey, [](QJsonObject quote) {
@@ -80,9 +81,74 @@ SymbolsLists::SymbolsLists(QString filename)
 
 void SymbolsLists::loadSymbols()
 {
+    totalBuy = 0.0;
+    totalPrice = 0.0;
     for(auto& s : _list)
     {
         addSymbol(s);
+        totalBuy    += s->getBuyPrice();
+        totalPrice += s->getPrice();
+    }
+}
+
+void SymbolsLists::fillQTableView(QTableView* table, QStandardItemModel* model)
+{
+
+    //LABEL = 0, NB, BUY, PRICE, VAR, REPART, TYPE, MAX
+
+    model->setHeaderData(colPosition::LABEL, Qt::Horizontal, "Nom");
+    model->setHeaderData(colPosition::NB, Qt::Horizontal,    "Nombre");
+    model->setHeaderData(colPosition::BUY, Qt::Horizontal,   "Prix d'achat");
+    model->setHeaderData(colPosition::TOTAL_INVEST, Qt::Horizontal, "Total Investi");
+    model->setHeaderData(colPosition::PRICE, Qt::Horizontal, "Prix actuel");
+    model->setHeaderData(colPosition::TOTAL_VAL, Qt::Horizontal, "Valeur Totale");
+    model->setHeaderData(colPosition::VAR, Qt::Horizontal,   "Variation");
+    model->setHeaderData(colPosition::REPART, Qt::Horizontal,"Répartition");
+    model->setHeaderData(colPosition::TYPE, Qt::Horizontal,  "Type");
+
+    table->reset();
+    for(int i = 0; i < _list.count(); i++)
+    {
+        QStandardItem* label = new QStandardItem(_list[i]->getLabel());
+        model->setItem(i, colPosition::LABEL, label);
+
+        QStandardItem* nb = new QStandardItem(QString::number(_list[i]->getNb(), 'f', 2));
+        nb->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        model->setItem(i, colPosition::NB, nb);
+
+        QStandardItem* buy = new QStandardItem(QString::number(_list[i]->getBuyPrice(), 'f', 2));
+        buy->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        model->setItem(i, colPosition::BUY, buy);
+
+        QStandardItem* totBuy = new QStandardItem(QString::number(_list[i]->getBuyPrice() * _list[i]->getNb(), 'f', 2));
+        totBuy->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        model->setItem(i, colPosition::TOTAL_INVEST, totBuy);
+
+        QStandardItem* price = new QStandardItem(QString::number(_list[i]->getPrice(), 'f', 2));
+        price->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        model->setItem(i, colPosition::PRICE, price);
+
+        QStandardItem* totPrice = new QStandardItem(QString::number(_list[i]->getPrice() * _list[i]->getNb(), 'f', 2));
+        totPrice->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        model->setItem(i, colPosition::TOTAL_VAL, totPrice);
+
+        float fVar = (_list[i]->getPrice() / _list[i]->getBuyPrice() - 1) * 100.0;
+        QString strVar = QString("%1 %").arg(fVar, 0, 'f', 2);
+        QStandardItem* var = new QStandardItem(strVar);
+        var->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        fVar >= 0 ? var->setForeground(QBrush(Qt::green)) : var->setForeground(QBrush(Qt::red));
+        model->setItem(i, colPosition::VAR, var);
+
+        float fRepart = _list[i]->getPrice() / totalPrice * 100;
+        QString strRepart = QString("%1 %").arg(fRepart, 0, 'f', 2);
+        QStandardItem* repart = new QStandardItem(strRepart);
+        repart->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        fRepart >= 0 ? repart->setForeground(QBrush(Qt::green)) : repart->setForeground(QBrush(Qt::red));
+        model->setItem(i, colPosition::REPART, repart);
+
+        QStandardItem* strType = new QStandardItem(_list[i]->getStrType());
+        model->setItem(i, colPosition::TYPE, strType);
+
     }
 }
 
